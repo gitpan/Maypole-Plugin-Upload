@@ -1,6 +1,6 @@
 package Maypole::Plugin::Upload;
 
-our $VERSION='0.01';
+our $VERSION='0.02';
 
 use constant APACHE2 => $mod_perl::VERSION && $mod_perl::VERSION >= 1.99;
 
@@ -13,10 +13,10 @@ sub upload {
    my ($r,$field) = @_;
    my ($filename,$fh,$content,$mime);
    if ($r->{ar}) {
-       my $au=$r->{ar}->upload($field);;
+       my $au=$r->{ar}->upload($field);
        $filename=$au->filename;
        $fh=$au->fh;
-       $fh=(APACHE2 ? $au->info->{"Content-type"} : $au->info("Content-type"));
+       $mime=(APACHE2 ? $au->info->{"Content-type"} : $au->info("Content-type"));
    } elsif ($r->{cgi}) {
        $filename=$r->{cgi}->param($field);
        $fh=$r->{cgi}->upload($field);
@@ -28,6 +28,7 @@ sub upload {
        die("File uploads not supported");
    }
    $content=do { local $/; <$fh> };
+   warn "Got Content-length:".length($content);
    return (wantarray ? ( filename=>$filename,
 		         content =>$content,
 		         mimetype=>$mime ) : $content);

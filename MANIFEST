@@ -1,4 +1,5 @@
 Build.PL
+Changes
 lib/Maypole/Plugin/Upload.pm
 Makefile.PL
 MANIFEST			This list of files
